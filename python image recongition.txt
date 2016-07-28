@@ -1,0 +1,182 @@
+http://programmingcomputervision.com/downloads/ProgrammingComputerVision_CCdraft.pdf
+
+seems old
+
+scipy seems hot, she even knows about it
+
+
+crash course on numpy
+http://scikit-image.org/docs/dev/user_guide/numpy_images.html
+
+called segmentation
+http://scikit-image.org/docs/dev/user_guide/tutorial_segmentation.html
+
+nice opencv version
+http://blog.christianperone.com/tag/image-segmentation/
+
+histogram seems great for the top points
+not great for bottom because of reflection
+take the smaller of the 2 unions
+
+what..
+>>> label_objects, nb_labels = ndi.label(fill_coins)
+>>> sizes = np.bincount(label_objects.ravel())
+>>> mask_sizes = sizes > 20
+>>> mask_sizes[0] = 0
+>>> coins_cleaned = mask_sizes[label_objects]
+
+
+thisll be my data
+>>> S = np.random.randint(0,10,100)
+>>> print S
+[0 4 8 0 1 4 5 2 7 9 0 8 8 6 8 4 4 0 0 2 6 6 7 4 3 6 5 8 0 7 6 1 5 5 1 1 2
+ 4 8 6 8 2 5 5 9 0 1 3 7 1 1 5 0 4 6 7 6 0 2 3 7 0 1 7 6 1 0 8 6 2 3 8 8 5
+ 1 7 3 6 3 9 1 1 7 1 4 4 6 6 8 5 6 0 6 7 9 2 7 3 7 1]
+
+
+>>> label_objects, nb_labels = ndi.label(S)
+>>> print label_objects
+[ 0  1  1  0  2  2  2  2  2  2  0  3  3  3  3  3  3  0  0  4  4  4  4  4  4
+  4  4  4  0  5  5  5  5  5  5  5  5  5  5  5  5  5  5  5  5  0  6  6  6  6
+  6  6  0  7  7  7  7  0  8  8  8  0  9  9  9  9  0 10 10 10 10 10 10 10 10
+ 10 10 10 10 10 10 10 10 10 10 10 10 10 10 10 10  0 11 11 11 11 11 11 11 11]
+>>> print nb_labels
+11
+>>> 
+
+
+so feature 10 wins with like 24 members
+
+>>> sizes = np.bincount(label_objects.ravel())
+>>> print sizes
+[12  2  6  6  9 16  6  4  3  4 24  8]
+
+
+#ravel flattens https://docs.scipy.org/doc/numpy/reference/generated/numpy.ravel.html
+
+this returns an array of the counts of pixels in each feature, so we see index 10 has 24
+
+
+
+ok, then find features that have greater than 20 pixels in them
+>>> mask_sizes = sizes > 20
+>>> 
+>>> print mask_sizes
+[False False False False False False False False False False  True False]
+
+Sure enough, its feature 10 still
+
+no fucking clue
+>>> mask_sizes[0] = 0
+>>> 
+>>> print mask_sizes
+[False False False False False False False False False False  True False]
+
+and apply that against the labeled object to turn off all features that didnt make the cut
+>>> coins_cleaned = mask_sizes[label_objects]
+>>> 
+>>> print coins_cleaned
+[False False False False False False False False False False False False
+ False False False False False False False False False False False False
+ False False False False False False False False False False False False
+ False False False False False False False False False False False False
+ False False False False False False False False False False False False
+ False False False False False False False  True  True  True  True  True
+  True  True  True  True  True  True  True  True  True  True  True  True
+  True  True  True  True  True  True  True False False False False False
+ False False False False]
+
+
+
+
+to recap
+
+#label https://docs.scipy.org/doc/scipy-0.16.0/reference/generated/scipy.ndimage.measurements.label.html
+#like minesweeper, any 1s touching eachother all get set to 1, then any more ones found touching eacother get set to 2, etc
+#so array members are numbered by the order they were seen in
+>>> label_objects, nb_labels = ndi.label(fill_coins)
+
+#ravel flattens https://docs.scipy.org/doc/numpy/reference/generated/numpy.ravel.html
+#bincount https://docs.scipy.org/doc/numpy/reference/generated/numpy.bincount.html
+#ie counts the 'size' of each feature by how many pixels make up that feature, returns an array sorted low to high with the 
+>>> sizes = np.bincount(label_objects.ravel())
+
+#take only features that have 20 or more pixels
+>>> mask_sizes = sizes > 20
+#cant for the life of me figure this one out
+>>> mask_sizes[0] = 0
+#not sure the operation, map?, but we can assume apply the mask against the label array to turn off features that didnt make the cut
+>>> coins_cleaned = mask_sizes[label_objects]
+
+
+
+so if I dont want to turn off the small features, but rather only keep the biggest feature
+
+
+
+
+going to give opencv3 a shot
+laplacian and sobel look great over there
+http://www.bogotobogo.com/python/OpenCV_Python/python_opencv3_Image_Gradient_Sobel_Laplacian_Derivatives_Edge_Detection.php
+
+
+
+
+oh she sent this, its what theyre using??
+http://bigwww.epfl.ch/demo/dropanalysis/
+
+
+
+this zero parameter canny doesnt work out of the box any better
+# zero parameter canny http://www.pyimagesearch.com/2015/04/06/zero-parameter-automatic-canny-edge-detection-with-python-and-opencv/
+
+
+
+deep neural good at edge detection but would need a lot of photos
+and since we control backgrounds the histogram method seems to work
+
+
+
+
+
+
+
+#seems like common fitting strategy is to find a couple points and create ellipses until you like teh best one
+#obvious commmon points are left and right most point
+
+
+how to find topmost, right most left most, bottom most
+
+
+#https://opencvpython.blogspot.com/2012/06/contours-3-extraction.html
+#none of it works though..
+
+
+
+
+# where https://docs.scipy.org/doc/numpy/reference/generated/numpy.where.html
+not sure.. 
+
+# argmin / max? https://docs.scipy.org/doc/numpy/reference/generated/numpy.argmin.html#numpy.argmin
+I dont thin argmin because were largely dealing with binary value here, its not the min, its the...
+the lowest index of the x value
+the highest index of the x value
+the highst index of the y value
+the lowest index of the y value
+
+
+
+
+iterate over rows
+https://docs.scipy.org/doc/numpy/reference/arrays.nditer.html
+
+wow, iterating and getting index not supported so use this methadology
+
+it = np.nditer(a, flags=['multi_index'])
+while not it.finished:
+  print "%d <%s>" % (it[0], it.multi_index),
+    it.iternext()
+
+
+hard to find teh center when theyre rotated
+how would you rotate the image until left ya nd right y are equal
