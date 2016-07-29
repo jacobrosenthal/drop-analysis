@@ -74,21 +74,6 @@ print "masked"
 print masked
 
 
-lefty = left[0]
-righty = right[0]
-#remember higher number, higher in photo
-print "left"
-print lefty
-print "right"
-print righty
-#if lefty is higher, rotate left
-if(lefty>righty)
-  ndi.interpolation.rotate(masked)
-
-#if rig is higher, rotate right
-if(righty>lefty)
-  ndi.interpolation.rotate(masked)
-
 
 
 
@@ -124,6 +109,32 @@ while not it.finished:
       break
     break
   it.iternext()
+
+
+
+
+
+lefty = left[0]
+righty = right[0]
+#remember higher number, higher in photo
+print "left"
+print lefty
+print "right"
+print righty
+
+
+#how much angle to rotate for each point difference?
+#if lefty is higher, rotate left around center?
+# if(lefty>righty)
+#   ndi.interpolation.rotate(masked)
+
+#if righty is higher, rotate right around center?
+# if(righty>lefty)
+#   ndi.interpolation.rotate(masked)
+
+
+
+#find equation of an ellipse from 3 points?
 
 
 
@@ -171,9 +182,9 @@ ax5.add_patch(circ4)
 from matplotlib.patches import Ellipse
 
 
-r = top[1] - left[1]
-c = plt.Circle((top[1], top[0]), r, color='r', linewidth=2, fill=False)
-ax5.add_patch(c)
+# r = top[1] - left[1]
+# c = plt.Circle((top[1], top[0]), r, color='r', linewidth=2, fill=False)
+# ax5.add_patch(c)
 
 
 ellipse = Ellipse(xy=(top[1], top[0]), width=0.036, height=0.012, 
